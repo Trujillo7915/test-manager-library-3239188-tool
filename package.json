@@ -1,0 +1,15 @@
+{
+  "name": "test-manager-library-3239188-tool",
+  "version": "1.0.0",
+  "description": "Prueba técnica SDD – Ficha ADSO 3239188 – Utilidades: sembrador de datos de demostración y prueba de carga",
+  "main": "seed.js",
+  "type": "module",
+  "scripts": {
+    "start": "node seed.js",
+    "seed": "node seed.js",
+    "load-test": "node load-test.js"
+  },
+  "keywords": ["sdd", "seeder", "sena", "demo-data", "load-test"],
+  "author": "Trujillo7915",
+  "license": "MIT"
+}

@@ -1,50 +1,58 @@
 # test-manager-library-3239188-tool
 
-> **Prueba técnica · Ficha ADSO 3239188**
-> Horario: **jueves 5 de noviembre de 2026, de 7:00 p. m. a 11:00 p. m.** (hora Colombia). Entrega a las **11:00 p. m.**
+> **Prueba técnica SDD · Ficha ADSO 3239188**  
+> Utilidades: sembrador de datos de demostración y prueba de carga por API.
 
-Este repositorio guarda las **utilidades** de *Manager Library*: el sembrador de datos de demostración, que usa la API. **Empieza vacío a propósito**: se construye en el fork de cada aprendiz.
+Este repositorio provee las herramientas automatizadas para poblar la biblioteca con datos de prueba realistas y evaluar los requisitos no funcionales del sistema.
 
-## Instrucciones
+---
 
-Cada aprendiz debe **crear el fork** de los seis repositorios del proyecto y **resolver el proyecto
-con el spec planteado**.
+## 1. Cumplimiento de la Constitución y del Spec
 
-1. Hacer fork, a su cuenta de GitHub, de cada repositorio de la tabla del final.
-2. Leer el spec en [`test-manager-library-3239188-docs`](https://github.com/code-sena/test-manager-library-3239188-docs).
-   Se entrega en dos versiones: `spec-python/` y `spec-.net/`.
-3. Desarrollar en los forks.
+* **Artículo IX & data-model.md §9:** El sembrador de datos de demostración usa la **API REST HTTP**, **nunca SQL directo**.
+* **Tarea T-21:**
+  * Siembra al menos **40 libros** distribuidos en las 5 categorías oficiales.
+  * Siembra al menos **10 socios** con número de documento único.
+  * Registra al menos **15 préstamos** con líneas asociadas.
+  * Genera **3 préstamos vencidos**, verificando que `/loans/overdue` devuelva al menos 3 registros.
+  * Registra devoluciones para comprobar el estado `closed` y la reposición de ejemplares.
+  * Verifica que el reporte `/reports/most-borrowed` contenga filas agrupadas.
+* **Requisito No Funcional RNF-1:** Script de prueba de carga y medición de latencia para verificar que las búsquedas de libros respondan en menos de 300 ms.
 
-## El reto se desarrolla con React y PHP (Laravel)
+---
 
-El spec está escrito para Python y para .NET, pero el reto **no** se hace en esos lenguajes:
+## 2. Requisitos Previos
 
-| Capa | Tecnología del reto |
-|---|---|
-| Frontend | React |
-| Backend | PHP con Laravel |
+* Node.js v18+ (utiliza la API nativa `fetch`, por lo que **no requiere instalar dependencias adicionales** con `npm install`).
 
-Lo que el spec define sobre el negocio —historias, criterios de aceptación, reglas, contrato de la
-API, modelo de datos— se respeta. Lo que define sobre la tecnología se traduce a React y Laravel.
+---
 
-## La prueba no consiste en escribir el código
+## 3. Uso del Sembrador (Seed)
 
-El propósito principal es ver la **capacidad de desempeño con SDD** (*Spec-Driven Development*,
-desarrollo guiado por especificación): cómo se lee, se interpreta y se aplica una especificación
-para llevarla a un stack distinto. El código es el medio, no el fin.
+1. Asegúrate de que el backend (`api`) esté levantado y escuchando peticiones en `http://localhost:8000/api/v1`.
+2. Ejecutar el sembrador de demostración:
+   ```bash
+   node seed.js
+   # o con npm:
+   npm run seed
+   ```
 
-## Entrega
+3. El script realizará:
+   * Login como administrador.
+   * Obtención del token JWT.
+   * Creación del bibliotecario de demostración.
+   * Creación de 42 libros con ISBN de 13 dígitos.
+   * Creación de 12 socios.
+   * Registro de préstamos y devoluciones.
+   * Verificación automática de `/loans/overdue` y `/reports/most-borrowed`.
 
-Cuenta lo que quede **subido a los forks antes de las 11:00 p. m.** Lo que llegue después no se revisa.
-No hay prórroga: suban avances parciales con commits pequeños durante la prueba.
+---
 
-## Los seis repositorios
+## 4. Prueba de Rendimiento / Carga (RNF-1)
 
-| Repositorio | Qué va ahí |
-|---|---|
-| [`test-manager-library-3239188-docs`](https://github.com/code-sena/test-manager-library-3239188-docs) | El spec: `spec-python/` y `spec-.net/` |
-| [`test-manager-library-3239188-api`](https://github.com/code-sena/test-manager-library-3239188-api) | Backend en PHP (Laravel) |
-| [`test-manager-library-3239188-app`](https://github.com/code-sena/test-manager-library-3239188-app) | Frontend en React |
-| [`test-manager-library-3239188-page`](https://github.com/code-sena/test-manager-library-3239188-page) | Sitio público estático de presentación |
-| [`test-manager-library-3239188-infra`](https://github.com/code-sena/test-manager-library-3239188-infra) | Contenedores, red, volúmenes y motor de base de datos vacío |
-| [`test-manager-library-3239188-tool`](https://github.com/code-sena/test-manager-library-3239188-tool) | Utilidades: sembrador de datos de demostración |
+Para medir los tiempos de respuesta de la búsqueda de catálogo:
+```bash
+node load-test.js
+# o con npm:
+npm run load-test
+```
